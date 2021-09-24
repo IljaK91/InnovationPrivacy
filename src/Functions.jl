@@ -9,7 +9,7 @@ end
 """
     Constructor for the Bayesian Parameters (weights on private signal and prior)
 """
-function BPar(β,par::Pars)
+function BPar(β, par::Pars)
     @unpack_Pars par
     
     w_a = β/(β + σ²ₐ^-1)  

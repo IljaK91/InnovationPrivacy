@@ -4,8 +4,9 @@ module InnovationPrivacy
 
 using Parameters
 
-include("Functions.jl")
 include("Types.jl")
+
+include("Functions.jl")
 
 export  Pars,
         BPars,
