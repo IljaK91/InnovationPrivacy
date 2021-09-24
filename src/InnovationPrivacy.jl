@@ -9,5 +9,7 @@ include("Types.jl")
 
 export  Pars,
         BPars,
-        firm_profit
+        firm_profit,
+        @unpack_Pars,
+        @unpack_BPars
 end # module
