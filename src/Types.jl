@@ -16,4 +16,5 @@ end
 @with_kw struct BPars
     w_a # Bayesian weight on the private signal
     w_p # Bayesian weight on the prior
+    σ²  # Posterior uncertainty
 end
