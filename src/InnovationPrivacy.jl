@@ -11,6 +11,7 @@ include("Functions.jl")
 export  Pars,
         BPars,
         firm_profit,
+        capital_demand,
         @unpack_Pars,
         @unpack_BPars
 end # module
