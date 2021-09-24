@@ -1,4 +1,4 @@
-@with_kw struct Pars begin
+@with_kw struct Pars
     # Economic Parameters
     θ       = 4
     α       = 0.5
@@ -13,7 +13,7 @@
     R   = 1
 end
 
-@with_kw struct BPars begin
+@with_kw struct BPars
     w_a # Bayesian weight on the private signal
     w_p # Bayesian weight on the prior
 end
