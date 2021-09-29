@@ -3,14 +3,14 @@
     θ       = 4
     α       = 0.5
     α_tilde = (θ - 1)/θ*α 
-
+    δ       = 0.9
     # Shocks
     a_t = 0
     σ²ₐ = 1
 
     # Partial Equilibrium
     Y   = 1
-    R   = 1
+    R   = 1.04
 end
 
 @with_kw struct BPars
