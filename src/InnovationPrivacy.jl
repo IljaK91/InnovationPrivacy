@@ -4,6 +4,8 @@ module InnovationPrivacy
 
 using Parameters
 
+using QuantEcon: qnwnorm
+
 include("Types.jl")
 
 include("Functions.jl")

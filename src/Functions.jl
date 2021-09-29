@@ -32,4 +32,3 @@ function capital_demand(a, par::Pars, bpar::BPars)
     @unpack_BPars bpar
     (Y^(1/θ)*EA(a, par, bpar)/R)^(1/(1-α_tilde))
 end
-τ
