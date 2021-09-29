@@ -9,11 +9,11 @@ end
 """
     Constructor for the Bayesian Parameters (weights on private signal and prior)
 """
-function BPars(β, par::Pars)
+function BPars(τ, par::Pars)
     @unpack_Pars par
     
-    σ²  = 1/(β + σ²ₐ^-1) # posterior uncertainty
-    w_a = β*σ² # weight on private signal  
+    σ²  = 1/(τ + σ²ₐ^-1) # posterior uncertainty
+    w_a = τ*σ² # weight on private signal  
     w_p = σ²ₐ^-1*σ² # weight on prior
 
     BPars(w_a = w_a,
@@ -32,3 +32,4 @@ function capital_demand(a, par::Pars, bpar::BPars)
     @unpack_BPars bpar
     (Y^(1/θ)*EA(a, par, bpar)/R)^(1/(1-α_tilde))
 end
+τ
