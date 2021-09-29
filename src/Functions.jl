@@ -1,7 +1,7 @@
 """
     Realized firm profits taking the interest rate R as given
 """
-function firm_profit(a, K, par::Pars)
+function firm_profit(a, K; par::Pars)
     @unpack_Pars par
     exp(a^((θ - 1)/θ))*K^α_tilde - R*K
 end
