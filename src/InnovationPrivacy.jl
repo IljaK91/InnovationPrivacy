@@ -5,6 +5,7 @@ module InnovationPrivacy
 using Parameters
 
 using QuantEcon: qnwnorm, gridmake
+using StatsFuns: normcdf
 
 include("Types.jl")
 
@@ -21,5 +22,6 @@ export  Pars, ParsGrowth, BPars, BParsGrowth,
         signal,
         Tau_of_K_old,
         solve_model,
-        K_solve
+        K_solve,
+        Transition_Probability
 end # module
