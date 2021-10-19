@@ -42,4 +42,4 @@ function Transition_Probability(par::ParsGrowth, bpar::BParsGrowth; normalize::S
     end
     return Π
 end
-Transition_Probability(n::Integer, par::ParsGrowth; normalize::Symbol) = Transition_Probability(par::ParsGrowth, BPars(n, par); normalize)
+Transition_Probability(n::Integer, par::ParsGrowth; normalize::Symbol = :yes) = Transition_Probability(par::ParsGrowth, BPars(n, par); normalize)
