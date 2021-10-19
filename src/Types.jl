@@ -51,12 +51,19 @@ end
     P = 1 # aggregate price level
     Y = 1 # aggregate expenditure
     w = 1 # wage rate
+
+    #! Parameters for solving the model
+    N = 10 # Number of grid points
+    a_min = -2
+    a_max = 2
+    a_grid = range(a_min, a_max, length = N)
 end
 
 """
     Bayesian parameter set for the replication of 'Firm Learning and Growth' (2018, RED)
 """
 @with_kw struct BParsGrowth
+    n
     V_n
     w_an
     w_pn
