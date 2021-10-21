@@ -34,29 +34,37 @@ end
 @with_kw struct ParsGrowth
     #! Deep Parameters
     σ     = 2.   # Elasticity of Substitution
-    δ     = 0.1  # Probability of a firm dying
-    f     = 0.1  # Fixed Cost of Operating
-    β     = 0.96 # discount rate
-
-    #! Shocks
-    θ_bar = 0 # mean demand shock
-    σ²_θ  = 1 # variance of demand shocks
-
-    σ²_ϵ  = 1 # variance of transitory demand shocks with zero mean
+    δ     = 0.1   # Probability of a firm dying
+    f     = 0.1   # Fixed Cost of Operating
+    β     = 0.96  # discount rate
+    J     = 1.    # Mass of entering firms
+    ξ     = 13.09 # Curvature exp(z) prod shock
     
-    z_bar = 0 # mean of firm productivity shocks
-    σ²_z  = 1 # variance of firm productivity shocks
+    z_min = 1.    # z_min is not really important!
+    #! Shocks
+    θ_bar = 0     # mean demand shock
+    σ²_θ  = 0.997 # variance of demand shocks
 
+    σ²_ϵ  = 1.46  # variance of transitory demand shocks with zero mean
+    
     #! Steady State Parameters
-    P = 1 # aggregate price level
-    Y = 1 # aggregate expenditure
-    w = 1 # wage rate
+    P = 1         # aggregate price level
+    Y = 1         # aggregate expenditure
+    w = 1         # wage rate
 
     #! Parameters for solving the model
-    N = 10 # Number of grid points
-    a_min = -2
-    a_max = 2
+    N      = 15 # Number of grid points
+    a_min  = -4
+    a_max  = 4
     a_grid = range(a_min, a_max, length = N)
+
+    N_z    = 30 # Number of grid points
+    z_max  = 3  # Check whether few firms become so large
+    z_grid = range(z_min, z_max, length = N_z) # A grid for z, which we will not really use.
+
+    u      = 0.5 # some random value
+    u_grid = (exp.(z_grid).^(σ-1).*P.^(σ-1).*Y./(w.^(σ-1))).^(1/(σ-1)) # Some initial value, but will be replaced later on
+    u_star = 0 # Needs to be solved for!
 end
 
 """

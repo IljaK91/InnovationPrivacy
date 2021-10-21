@@ -84,6 +84,7 @@ function iterate(V_guess, K_sol, V_new, a, ε, w, V_next_big, par::Pars)
     return V_new
 end
 
+
 function K_solve(s, V, K_old; par::Pars)
     @unpack_Pars par
     W_big  = Eπ.(s, K_grid; par, bpar = BPars(Tau_of_K_old(K_old), par)) .+ (1-δ).*K_old - γ/2*K_grid.^2/K_old + R^-1*V
