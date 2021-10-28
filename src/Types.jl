@@ -45,7 +45,8 @@ end
     θ_bar = 0     # mean demand shock
     σ²_θ  = 0.997 # variance of demand shocks
 
-    σ²_ϵ  = 1.46  # variance of transitory demand shocks with zero mean
+    σ²_ϵ  = 1.46    # variance of transitory demand shocks with zero mean
+    ϵ_bar = -σ²_ϵ/(σ*2) # mean transient demand shock. Chosen to get a mean-preserving change in the variance.
     
     #! Steady State Parameters
     P = 1         # aggregate price level
@@ -53,10 +54,11 @@ end
     w = 1         # wage rate
 
     #! Parameters for solving the model
-    N      = 15 # Number of grid points
-    a_min  = -4
-    a_max  = 4
-    a_grid = range(a_min, a_max, length = N)
+    N            = 15 # Number of grid points
+    a_min        = -4
+    a_max        = 4
+    a_grid       = range(a_min, a_max, length = N)
+    a_thresholds = [(a_grid[i+1] - a_grid[i])/2 + a_grid[i] for i in 1:length(a_grid)-1]
 
     N_z    = 30 # Number of grid points
     z_max  = 3  # Check whether few firms become so large
