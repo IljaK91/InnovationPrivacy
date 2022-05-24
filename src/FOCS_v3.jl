@@ -1,19 +1,15 @@
 """
     First order condition for data generation
 """
-function FOC_data_gen(l_G, l_P, D, l, D_I; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function FOC_data_gen(l_G, D, l, D_I; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     @assert type in [:LU, :LS, :BU, :BS]
 
     D_G = data_gen(l_G; par, type)
-    Π = firm_revenue(l_P, D, l; par, type)
-    γ = gamma_of_type(par; type)
-    
-    if sec_period == :no
-        α_K_hat * (1 - γ) * (1 - ϕ) * D_G / l_G * Π / D * dD_dDI(D, D_I; par) - w_G
-    elseif sec_period == :yes
-        α_K_hat * (1 - γ) * (1 - ϕ) * D_G / l_G * Π / D * dD_dDI(D, D_I; par) - w_G2
-    end
+    Π = firm_revenue(D, l; par, type)
+    α_K_hat = get_alpha_K_type(par; type)
+
+    α_K_hat * (1 - ϕ) * D_G / l_G * Π / D * dD_dDI(D, D_I; par) - w_G
 end
 
 function FOC_data_gen2(l_G, l_P, D, l, D_I, l_P_next, D_next, l_next; par::Pars_v3, type::Symbol)
@@ -61,17 +57,13 @@ end
 """
     First order condition for data sharing
 """
-function FOC_data_sharing(l_P, D, DI, l; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function FOC_data_sharing(D, DI, l; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     @assert type in [:LU, :LS, :BU, :BS]
 
     γ = gamma_of_type(par; type)
-    Π = firm_revenue(l_P,D,l; par, type)
-    if sec_period == :no
-        p_D - α_K_hat * (1 - γ) * Π / D * dD_dDS(D, DI; par)
-    elseif sec_period == :yes
-        p_D2 - α_K_hat * (1 - γ) * Π / D * dD_dDS(D, DI; par)
-    end
+    Π = firm_revenue(D,l; par, type)
+    p_D - α_K_hat * Π / D * dD_dDS(D, DI; par)
 end
 
 function FOC_data_sharing2(l_P, D, DI, l, l_P_next, D_next, l_next; par::Pars_v3, type::Symbol)
@@ -88,17 +80,13 @@ end
 """
     First order condition for data buying
 """
-function FOC_data_buying(l_P, D, l, DE; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function FOC_data_buying(D, l, DE; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     @assert type in [:LU, :LS, :BU, :BS]
 
-    Π = firm_revenue(l_P, D, l; par, type)
-    γ = gamma_of_type(par; type)
-    if sec_period == :no
-        α_K_hat * (1 - γ) * Π / D * dD_dDE(D, DE; par) - p_D / (1 - τ)
-    elseif sec_period == :yes
-        α_K_hat * (1 - γ) * Π / D * dD_dDE(D, DE; par) - p_D2 / (1 - τ2)
-    end
+    Π = firm_revenue(D, l; par, type)
+    α_K_hat = get_alpha_K_type(par; type)
+    α_K_hat * Π / D * dD_dDE(D, DE; par) - p_D / (1 - τ)
 end
 
 """
@@ -200,27 +188,22 @@ firm_output(l_P, D, l, type; par::Pars_v3) = firm_output(l_P, D, l; par, type)
 """
     revenue = p_i * Y_i
 """
-function firm_revenue(l_P, D, l; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
-    K = knowledge(l_P, D; par, type)
-    if sec_period == :no
-        par.ζ * par.Y^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
-    elseif sec_period == :yes
-        par.ζ * par.Y2^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
-    end
+function firm_revenue(D, l; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+    α_K_hat = get_alpha_K_type(type; par)
+    α_L_hat = get_alpha_L_type(type; par)
+    par.ζ * par.Y^par.α_Y * D^par.α_K_hat * l^par.α_L_hat
 end
 
-firm_revenue(l_P, D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(l_P, D, l; par, type, sec_period)
+firm_revenue(D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(D, l; par, type, sec_period)
 
-"""
-    Revenue of knowledge and labor
-"""
-function firm_revenue(K, l; par::Pars_v3, sec_period::Symbol = :no)
-    if sec_period == :no
-        par.ζ * par.Y^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
-    elseif sec_period == :yes
-        par.ζ * par.Y2^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
-    end
-end 
+#! this does not work anymore, need to see where it throws an error...
+# function firm_revenue(K, l; par::Pars_v3, sec_period::Symbol = :no)
+#     if sec_period == :no
+#         par.ζ * par.Y^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
+#     elseif sec_period == :yes
+#         par.ζ * par.Y2^par.α_Y * K^par.α_K_hat * l^par.α_L_hat
+#     end
+# end 
 
 """
     Analytical solution for labor demand

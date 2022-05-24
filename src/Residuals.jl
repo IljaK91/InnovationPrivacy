@@ -26,13 +26,13 @@ function residuals_unc_nl(x, res; par::Pars_v3, type::Symbol, sec_period::Symbol
     D_I = x[3]^2
 
     D = bundle(D_I, D_E; par, type)
-    l = labor_demand(l_P, D; par, type)
+    l = labor_demand(D; par, type)
 
     #! FOCs
-    res[1] = FOC_data_buying(l_P, D, l, D_E; par, type, sec_period)
-    res[2] = FOC_data_gen(l_G, l_P, D, l, D_I; par, type, sec_period)
-    res[3] = FOC_data_proc(l_P, D, l; par, type, sec_period)
-    res[4] = FOC_data_sharing(l_P, D, D_I, l; par, type, sec_period)
+    res[1] = FOC_data_buying(D, l, D_E; par, type)
+    res[2] = FOC_data_gen(l_G, D, l, D_I; par, type)
+    #res[3] = FOC_data_proc(l_P, D, l; par, type, sec_period)
+    res[3] = FOC_data_sharing(D, D_I, l; par, type)
 
     return res # Try to force the algorithm to come up with something more precise
 end

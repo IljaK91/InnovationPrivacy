@@ -124,7 +124,7 @@ end
 
 function solve_firm_problem_nl(par::Pars_v3; type::Symbol, sec_period::Symbol=:no)
     sol = solve_firm_problem_unc_nl(par; type, sec_period)
-    l_P, l_G, l, D_E, D_I, D = get_solution_nl(sol; par, type)
+    l_G, l, D_E, D_I, D = get_solution_nl(sol; par, type)
 
     D_S = sold_data(D_I, l_G; par, type)
     #! Idea: Solve first unconstrained problem. If firm tries to buy internal data, constrain to not sharing data.
