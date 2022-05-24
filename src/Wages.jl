@@ -12,7 +12,10 @@ function wage_int_goods(Π; par)
     w_LU = weight_of_type(:LU; par)
     w_BU = weight_of_type(:BU; par)
 
-    return par.ζ * par.α_L_hat * (w_BS * Π_BS + w_LS * Π_LS + w_LU * Π_LU + w_BU * Π_BU)
+    α_U_L_hat = get_alpha_L_type(:LU; par)
+    α_S_L_hat = get_alpha_L_type(:LS; par)
+
+    return par.ζ * (α_S_L_hat * (w_BS * Π_BS +  w_LS * Π_LS) + α_U_L_hat * (w_LU  * Π_LU + w_BU * Π_BU))
 end
 
 function wage_gen_data(Π, D, l_G, D_I; par)
@@ -41,17 +44,20 @@ function wage_gen_data(Π, D, l_G, D_I; par)
     w_LU = weight_of_type(:LU; par) # weights
     w_BU = weight_of_type(:BU; par) # weights
 
-    D_G_BS = data_gen(l_G_BS; par, type = :BS)
-    D_G_LS = data_gen(l_G_LS; par, type = :LS)
-    D_G_LU = data_gen(l_G_LU; par, type = :LU)
-    D_G_BU = data_gen(l_G_BU; par, type = :BU)
+    D_G_BS = data_gen(l_G_BS; par, type=:BS)
+    D_G_LS = data_gen(l_G_LS; par, type=:LS)
+    D_G_LU = data_gen(l_G_LU; par, type=:LU)
+    D_G_BU = data_gen(l_G_BU; par, type=:BU)
 
     c_BS = D_G_BS * Π_BS / D_BS * (D_BS / D_I_BS)^(1 / par.ε) # Put some things together
     c_LS = D_G_LS * Π_LS / D_LS * (D_LS / D_I_LS)^(1 / par.ε) # Put some things together
     c_LU = D_G_LU * Π_LU / D_LU * (D_LU / D_I_LU)^(1 / par.ε) # Put some things together
     c_BU = D_G_BU * Π_BU / D_BU * (D_BU / D_I_BU)^(1 / par.ε) # Put some things together
 
-    return par.ζ * par.α_K_hat * (1 - par.ϕ) * ((1 - par.γ_S) * w_BS * c_BS + (1 - par.γ_S) * w_LS * c_LS + (1 - par.γ_U) * w_LU * c_LU + (1 - par.γ_U) * w_BU * c_BU)
+    α_U_K_hat = get_alpha_K_type(:LU; par)
+    α_S_K_hat = get_alpha_K_type(:LS; par)
+
+    return par.ζ * (1 - par.ϕ) * (α_S_K_hat * (w_BS * c_BS + w_LS * c_LS) + α_U_K_hat * (w_LU * c_LU + w_BU * c_BU))
 end
 
 """
