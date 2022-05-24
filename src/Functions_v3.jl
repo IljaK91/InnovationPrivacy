@@ -483,17 +483,20 @@ function find_p_D(par::Pars_v3; verbose = false)
     #find_zero(f, [0.001, 2], verbose = verbose, xatol = 1e-10, xrtol = 1e-10, atol = 1e-10, rtol = 1e-10)
 end
 
-function comp_statics(τ_set, ν_set, A_G_common_set, A_P_common_set; tol = 1e-10, ζ = 1.0, γ_S = 0.2, γ_U = 0.4)
-    grid = gridmake(τ_set, ν_set, A_G_common_set, A_P_common_set)
+"""
+    Compute comparatics statics using the simplified version of the model
+"""
+function comp_statics(τ_set, ν_set, A_G_common_set; tol = 1e-10, ζ = 1.0, α_S = 0.8, α_U = 0.6)
+    grid = gridmake(τ_set, ν_set, A_G_common_set)
     sol = Array{Any}(undef, 0)
     for i in 1:size(grid)[1]
         @show i
         @show grid[i, :]
         if i == 1
-            push!(sol, find_steady_state(Pars_v3(τ = grid[i, 1], ν = grid[i, 2], A_G_common = grid[i, 3], A_P_common = grid[i, 4], ζ = ζ, γ_S = γ_S, γ_U = γ_U); tol))
+            push!(sol, find_steady_state(Pars_v3(τ = grid[i, 1], ν = grid[i, 2], A_G_common = grid[i, 3], ζ = ζ, α_S = α_S, α_U = α_U); tol))
         else
             #try
-            push!(sol, find_steady_state(Pars_v3(τ = grid[i, 1], ν = grid[i, 2], A_G_common = grid[i, 3], A_P_common = grid[i, 4], Y = sol[i-1].Y, w = sol[i-1].w, w_P = sol[i-1].w_P, w_G = sol[i-1].w_G, ζ = ζ, γ_S = γ_S, γ_U = γ_S); tol))
+            push!(sol, find_steady_state(Pars_v3(τ = grid[i, 1], ν = grid[i, 2], A_G_common = grid[i, 3], Y = sol[i-1].Y, w = sol[i-1].w, w_G = sol[i-1].w_G, ζ = ζ, α_S = α_S, α_U = α_U); tol))
             #catch
             #    push!(sol, find_steady_state(Pars_v3(τ = grid[i, 1], ν = grid[i, 2], A_G_common = grid[i, 3], A_P_common = grid[i, 4]); tol))
             #end
