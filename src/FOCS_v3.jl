@@ -225,16 +225,13 @@ end
 """
     Analytical solution for labor demand
 """
-function labor_demand(l_P, D; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function labor_demand(D; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
     @unpack_Pars_v3 par
-    K = knowledge(l_P, D; par, type)
-    if sec_period == :no
-        (ζ * α_L_hat * Y^(α_Y) * K^(α_K_hat) / w)^(1 / (1 - α_L_hat))
-    elseif sec_period == :yes
-        (ζ * α_L_hat * Y2^(α_Y) * K^(α_K_hat) / w2)^(1 / (1 - α_L_hat))
-    end
+    α_K_hat = get_alpha_K_type(par; type)
+    α_L_hat = get_alpha_L_type(par; type)
+    (ζ * α_L_hat * Y^(α_Y) * D^(α_K_hat) / w)^(1 / (1 - α_L_hat))
 end
-labor_demand(l_P, D, type; par::Pars_v3, sec_period::Symbol = :no) = labor_demand(l_P, D; par, type, sec_period)
+labor_demand(D, type; par::Pars_v3, sec_period::Symbol = :no) = labor_demand(D; par, type, sec_period)
 
 """
     Analytical Solution when D_S > 0.
