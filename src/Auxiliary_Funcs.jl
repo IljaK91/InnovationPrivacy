@@ -4,10 +4,10 @@
 function Save_Firm_Solution(l, l_P, l_G, D_I, D_E, D; par::Pars_v3)
     type = [:BS, :LS, :LU, :BU]
 
-    D_S  = sold_data.(D_I, l_G, type; par)
-    D_G  = data_gen.(l_G, type; par)
+    D_S = sold_data.(D_I, l_G, type; par)
+    D_G = data_gen.(l_G, type; par)
     prof = firm_profits.(l, l_P, l_G, D_S, D_E, type; par)
-    K    = knowledge.(l_P, D, type; par)
+    K = knowledge.(l_P, D, type; par)
     res = Firm_sol()
     @set! res.prof_BS_ss = prof[1] # Labor good production big customer base, sophisticated
     @set! res.prof_LS_ss = prof[2] # Labor good production small customer base, sophisticated
@@ -62,6 +62,33 @@ function Save_Firm_Solution(l, l_P, l_G, D_I, D_E, D; par::Pars_v3)
     return res
 end
 
+function get_alpha_K_type(type::Symbol;par::Pars_v3)
+    if type == :LU # little, unsophisticated
+        par.α_U_K_hat
+    elseif type == :LS # little, sophisticated
+        par.α_S_K_hat
+    elseif type == :BU # big, unsophisticated
+        par.α_U_K_hat
+    elseif type == :BS # big, sophisticated
+        par.α_S_K_hat
+    else
+        error("Firm type needs to be either LU, LS, BU or BS")
+    end
+end
+
+function get_alpha_L_type(type::Symbol;par::Pars_v3)
+    if type == :LU # little, unsophisticated
+        par.α_U_L_hat
+    elseif type == :LS # little, sophisticated
+        par.α_S_L_hat
+    elseif type == :BU # big, unsophisticated
+        par.α_U_L_hat
+    elseif type == :BS # big, sophisticated
+        par.α_S_L_hat
+    else
+        error("Firm type needs to be either LU, LS, BU or BS")
+    end
+end
 
 function weight_of_type(type::Symbol; par::Pars_v3)
     if type == :LU # little, unsophisticated
@@ -201,8 +228,8 @@ function get_solution_nl2(sol; par::Pars_v3, type::Symbol)
         D_I2 = data_gen(l_G2; par, type)
         D = bundle(D_I, D_E; par, type)
         D2 = bundle(D_I2, D_E2; par, type)
-        l = labor_demand(l_P, D; par, type, sec_period = :no)
-        l2 = labor_demand(l_P2, D2; par, type, sec_period = :yes)
+        l = labor_demand(l_P, D; par, type, sec_period=:no)
+        l2 = labor_demand(l_P2, D2; par, type, sec_period=:yes)
     else
         error("I should never be here")
     end
@@ -210,7 +237,7 @@ end
 
 function set_a_Y(compl_prod, σ, ζ)
     if compl_prod == :yes
-        α_Y = (σ*ζ - σ + 1) / (σ*ζ) # auxiliary paramter
+        α_Y = (σ * ζ - σ + 1) / (σ * ζ) # auxiliary paramter
     elseif compl_prod == :no
         α_Y = 0
     else
