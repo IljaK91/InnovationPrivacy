@@ -2,16 +2,16 @@
 #! In desparate need of cleaning up!
 module InnovationPrivacy
 using Suppressor
-using Parameters, Setfield, Optim, NLsolve, DataFrames, Interpolations
+@suppress using Parameters, Setfield, Optim, NLsolve, DataFrames, Interpolations
 
-@suppress using QuantEcon:qnwnorm, gridmake
+@suppress using QuantEcon: qnwnorm, gridmake
 #using StatsFuns: normcdf
-using Roots: find_zero
-using Distributions: cdf, Pareto
-using StatsBase: ecdf
-using Statistics: quantile
+@suppress using Roots: find_zero
+@suppress using Distributions: cdf, Pareto
+@suppress using StatsBase: ecdf
+@suppress using Statistics: quantile
 
-using Plots
+@suppress using Plots
 #pgfplotsx()
 
 include("Types.jl")
