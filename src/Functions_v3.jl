@@ -37,14 +37,13 @@ function solve_firm_problem_unc(par::Pars_v3; type::Symbol)
     return res
 end
 
-function solve_firm_problem_unc_nl(par::Pars_v3; type::Symbol, sec_period::Symbol=:no)
-    res = zeros(4)
-    f!(x) = residuals_unc_nl(x, res; par, type, sec_period)
+function solve_firm_problem_unc_nl(par::Pars_v3; type::Symbol)
+    res = zeros(3)
+    f!(x) = residuals_unc_nl(x, res; par, type)
 
     initial_x = [1.090961407034043,
         1.7305342659571796,
-        0.8017602275570367,
-        0.846302424724036]
+        0.8017602275570367]
 
     #res = optimize(f, initial_x, Optim.Options(g_tol = 1e-14))
     res = nlsolve(f!, initial_x)
@@ -85,9 +84,9 @@ end
 """
 function solve_firm_problem_con_nl(par::Pars_v3; type::Symbol)
     #f(x) = residuals_con(x; par, type)
-    res = zeros(3)
+    res = zeros(2)
     f!(x) = residuals_con_nl(x, res; par, type)
-    initial_x = [0.5, 0.5, 0.5]
+    initial_x = [0.5, 0.5]
     #res = optimize(f, initial_x, Optim.Options(g_tol = 1e-14))
     res = nlsolve(f!, initial_x)
     #@assert Optim.converged(res) == true
@@ -122,8 +121,8 @@ function solve_firm_problem(par::Pars_v3; type::Symbol)
     end
 end
 
-function solve_firm_problem_nl(par::Pars_v3; type::Symbol, sec_period::Symbol=:no)
-    sol = solve_firm_problem_unc_nl(par; type, sec_period)
+function solve_firm_problem_nl(par::Pars_v3; type::Symbol)
+    sol = solve_firm_problem_unc_nl(par; type)
     l_G, l, D_E, D_I, D = get_solution_nl(sol; par, type)
 
     D_S = sold_data(D_I, l_G; par, type)

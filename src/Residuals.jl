@@ -20,7 +20,7 @@ function residuals_unc(x; par::Pars_v3, type::Symbol)
     return sum(abs.(res)) # Try to force the algorithm to come up with something more precise
 end
 
-function residuals_unc_nl(x, res; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function residuals_unc_nl(x, res; par::Pars_v3, type::Symbol)
     l_G = x[1]^2
     D_E = x[2]^2
     D_I = x[3]^2
@@ -106,18 +106,17 @@ end
     Constrained residuals, D_S = 0, no data selling.
 """
 function residuals_con_nl(x, res; par::Pars_v3, type::Symbol)
-    l_P = x[1]^2
-    l_G = x[2]^2
-    D_E = x[3]^2
+    l_G = x[1]^2
+    D_E = x[2]^2
 
     D_I = data_gen(l_G; par, type)
     D = bundle(D_I, D_E; par, type)
-    l = labor_demand(l_P, D; par, type)
+    l = labor_demand(D; par, type)
 
     #! FOCs
-    res[1] = FOC_data_buying(l_P, D, l, D_E; par, type)
-    res[2] = FOC_data_gen(l_G, l_P, D, l, D_I; par, type)
-    res[3] = FOC_data_proc(l_P, D, l; par, type)
+    res[1] = FOC_data_buying(D, l, D_E; par, type)
+    res[2] = FOC_data_gen(l_G, D, l, D_I; par, type)
+    #res[3] = FOC_data_proc(D, l; par, type)
 
     return res
 end

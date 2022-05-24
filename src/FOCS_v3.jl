@@ -7,7 +7,7 @@ function FOC_data_gen(l_G, D, l, D_I; par::Pars_v3, type::Symbol)
 
     D_G = data_gen(l_G; par, type)
     Π = firm_revenue(D, l; par, type)
-    α_K_hat = get_alpha_K_type(par; type)
+    α_K_hat = get_alpha_K_type(type; par)
 
     α_K_hat * (1 - ϕ) * D_G / l_G * Π / D * dD_dDI(D, D_I; par) - w_G
 end
@@ -61,8 +61,8 @@ function FOC_data_sharing(D, DI, l; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     @assert type in [:LU, :LS, :BU, :BS]
 
-    γ = gamma_of_type(par; type)
     Π = firm_revenue(D,l; par, type)
+    α_K_hat = get_alpha_K_type(type;par)
     p_D - α_K_hat * Π / D * dD_dDS(D, DI; par)
 end
 
@@ -85,7 +85,7 @@ function FOC_data_buying(D, l, DE; par::Pars_v3, type::Symbol)
     @assert type in [:LU, :LS, :BU, :BS]
 
     Π = firm_revenue(D, l; par, type)
-    α_K_hat = get_alpha_K_type(par; type)
+    α_K_hat = get_alpha_K_type(type; par)
     α_K_hat * Π / D * dD_dDE(D, DE; par) - p_D / (1 - τ)
 end
 
@@ -127,17 +127,9 @@ end
 """
     The value of the data bundle using both internal and external data.
 """
-function bundle(D_I, D_E; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function bundle(D_I, D_E; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
-    D_last = D_last_of_type(par; type)
-    if sec_period == :yes
-        (D_I^((ε - 1) / ε) + ξ * D_E^((ε - 1) / ε))^(ε / (ε - 1)) + (1 - par.δ_D) * D_last
-    elseif sec_period == :no
-        (D_I^((ε - 1) / ε) + ξ * D_E^((ε - 1) / ε))^(ε / (ε - 1))
-    else
-        error("second_period needs to be either :yes or :no")
-    end
-
+    (D_I^((ε - 1) / ε) + ξ * D_E^((ε - 1) / ε))^(ε / (ε - 1))
 end
 
 data_multiplier(D_G, D_S; par::Pars_v3) = 1 - (par.τ - par.ν) * D_S / D_G
@@ -191,7 +183,7 @@ firm_output(l_P, D, l, type; par::Pars_v3) = firm_output(l_P, D, l; par, type)
 function firm_revenue(D, l; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
     α_K_hat = get_alpha_K_type(type; par)
     α_L_hat = get_alpha_L_type(type; par)
-    par.ζ * par.Y^par.α_Y * D^par.α_K_hat * l^par.α_L_hat
+    par.ζ * par.Y^par.α_Y * D^α_K_hat * l^α_L_hat
 end
 
 firm_revenue(D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(D, l; par, type, sec_period)
@@ -208,10 +200,10 @@ firm_revenue(D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(
 """
     Analytical solution for labor demand
 """
-function labor_demand(D; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function labor_demand(D; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
-    α_K_hat = get_alpha_K_type(par; type)
-    α_L_hat = get_alpha_L_type(par; type)
+    α_K_hat = get_alpha_K_type(type; par)
+    α_L_hat = get_alpha_L_type(type; par)
     (ζ * α_L_hat * Y^(α_Y) * D^(α_K_hat) / w)^(1 / (1 - α_L_hat))
 end
 labor_demand(D, type; par::Pars_v3, sec_period::Symbol = :no) = labor_demand(D; par, type, sec_period)

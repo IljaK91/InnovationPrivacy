@@ -166,24 +166,22 @@ end
 
 function get_solution_nl(sol; par::Pars_v3, type::Symbol)
     if length(sol.zero) == 4
-        l_P = sol.zero[1]^2
-        l_G = sol.zero[2]^2
-        D_E = sol.zero[3]^2
-        D_I = sol.zero[4]^2
+        l_G = sol.zero[1]^2
+        D_E = sol.zero[2]^2
+        D_I = sol.zero[3]^2
         D = bundle(D_I, D_E; par, type)
-        l = labor_demand(l_P, D; par, type)
+        l = labor_demand(D; par, type)
     elseif length(sol.zero) == 3
-        l_P = sol.zero[1]^2
-        l_G = sol.zero[2]^2
-        D_E = sol.zero[3]^2
+        l_G = sol.zero[1]^2
+        D_E = sol.zero[2]^2
         D_I = data_gen(l_G; par, type)
         D = bundle(D_I, D_E; par, type)
-        l = labor_demand(l_P, D; par, type)
+        l = labor_demand(D; par, type)
     else
         error("I should never be here")
     end
 
-    return l_P, l_G, l, D_E, D_I, D
+    return l_G, l, D_E, D_I, D
 end
 
 function get_solution_nl2(sol; par::Pars_v3, type::Symbol)
