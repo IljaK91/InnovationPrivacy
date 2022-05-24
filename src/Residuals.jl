@@ -21,10 +21,9 @@ function residuals_unc(x; par::Pars_v3, type::Symbol)
 end
 
 function residuals_unc_nl(x, res; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
-    l_P = x[1]^2
-    l_G = x[2]^2
-    D_E = x[3]^2
-    D_I = x[4]^2
+    l_G = x[1]^2
+    D_E = x[2]^2
+    D_I = x[3]^2
 
     D = bundle(D_I, D_E; par, type)
     l = labor_demand(l_P, D; par, type)
