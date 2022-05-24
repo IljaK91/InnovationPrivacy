@@ -208,6 +208,9 @@ function get_ss_solution(sol)
     return Y, w, w_P, w_G, p_D
 end
 
+"""
+    Find the steady state given a set of parameters
+"""
 function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
     diff = 10
     counter = 0
@@ -216,12 +219,11 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
         p_D_sol = find_p_D(par)
         @set! par.p_D = p_D_sol
 
-        l_P_BS, l_G_BS, l_BS, D_E_BS, D_I_BS, D_BS = sol_f_problem_nl(par; type=:BS)
-        l_P_LS, l_G_LS, l_LS, D_E_LS, D_I_LS, D_LS = sol_f_problem_nl(par; type=:LS)
-        l_P_LU, l_G_LU, l_LU, D_E_LU, D_I_LU, D_LU = sol_f_problem_nl(par; type=:LU)
-        l_P_BU, l_G_BU, l_BU, D_E_BU, D_I_BU, D_BU = sol_f_problem_nl(par; type=:BU)
+        l_G_BS, l_BS, D_E_BS, D_I_BS, D_BS = sol_f_problem_nl(par; type=:BS)
+        l_G_LS, l_LS, D_E_LS, D_I_LS, D_LS = sol_f_problem_nl(par; type=:LS)
+        l_G_LU, l_LU, D_E_LU, D_I_LU, D_LU = sol_f_problem_nl(par; type=:LU)
+        l_G_BU, l_BU, D_E_BU, D_I_BU, D_BU = sol_f_problem_nl(par; type=:BU)
 
-        l_P = [l_P_BS, l_P_LS, l_P_LU, l_P_BU]
         l_G = [l_G_BS, l_G_LS, l_G_LU, l_G_BU]
         l = [l_BS, l_LS, l_LU, l_BU]
         D_E = [D_E_BS, D_E_LS, D_E_LU, D_E_BU]
@@ -254,14 +256,13 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
         Y = aggregate_output(Y_BS, Y_LS, Y_LU, Y_BU; par)
         w = wage_int_goods(Π; par)
         w_G = wage_gen_data(Π, D, l_G, D_I; par)
-        w_P = wage_gen_proc(Π, D; par)
 
         if par.α_Y == 0
             res = zeros(3)
 
             res[1] = w - par.w
             res[2] = 10 * (w_G - par.w_G) # Make this constraint more important?
-            res[3] = w_P - par.w_P
+
 
             diff = sum(res .^ 2)
         else
@@ -271,7 +272,6 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             res[1] = Y - par.Y
             res[2] = w - par.w
             res[3] = 10 * (w_G - par.w_G) # Make this constraint more important?
-            res[4] = w_P - par.w_P
 
             diff = sum(res .^ 2)
         end
@@ -288,7 +288,6 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
         @set! par.Y = par.λ * Y + (1 - par.λ) * par.Y
         @set! par.w = par.λ * w + (1 - par.λ) * par.w
         @set! par.w_G = par.λ * w_G + (1 - par.λ) * w_G
-        @set! par.w_P = par.λ * w_P + (1 - par.λ) * w_P
 
         if diff < tol || counter > 100
         
@@ -340,11 +339,6 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             @set! par.l_LS_ss = l_LS # Labor good production small customer base, sophisticated
             @set! par.l_BS_ss = l_BS # Labor good production big customer base, sophisticated
         
-            @set! par.l_P_LU_ss = l_P_LU # Labor good production small customer base, unsophisticated
-            @set! par.l_P_BU_ss = l_P_BU # Labor good production big customer base, unsophisticated
-            @set! par.l_P_LS_ss = l_P_LS # Labor good production small customer base, sophisticated
-            @set! par.l_P_BS_ss = l_P_BS # Labor good production big customer base, sophisticated
-        
             @set! par.l_G_LU_ss = l_G_LU # Labor good production small customer base, unsophisticated
             @set! par.l_G_BU_ss = l_G_BU # Labor good production big customer base, unsophisticated
             @set! par.l_G_LS_ss = l_G_LS # Labor good production small customer base, sophisticated
@@ -380,7 +374,7 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             @set! par.K_LS_ss = K_LS # knowledge employed small customer base, sophisticated
             @set! par.K_BS_ss = K_BS # knowledge employed big customer base, sophisticated
         
-            @set! par.Firm_sol = Save_Firm_Solution(l, l_P, l_G, D_I, D_E, D; par)
+            @set! par.Firm_sol = Save_Firm_Solution(l, l_G, D_I, D_E, D; par)
         end
     end
     return par
