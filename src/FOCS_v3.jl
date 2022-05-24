@@ -171,11 +171,11 @@ sold_data(D_I, l_G, type; par::Pars_v3) = sold_data(D_I, l_G; par, type)
 """
     output = Y_i = K^α*l^(1-α)
 """
-function firm_output(l_P, D, l; par::Pars_v3, type::Symbol)
-    K = knowledge(l_P, D; par, type)
-    K^par.α * l^(1 - par.α)
+function firm_output(D, l; par::Pars_v3, type::Symbol)
+    α_K_hat = get_alpha_K_type(type; par)
+    D^α_K_hat * l^(1 - α_K_hat)
 end
-firm_output(l_P, D, l, type; par::Pars_v3) = firm_output(l_P, D, l; par, type)
+firm_output(D, l, type; par::Pars_v3) = firm_output(D, l; par, type)
 
 """
     revenue = p_i * Y_i

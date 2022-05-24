@@ -234,21 +234,15 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
         #D_LU = bundle(D_I_LU, D_E_LU; par)
         #D_BU = bundle(D_I_BU, D_E_BU; par)
 
-        Y_BS = firm_output(l_P_BS, D_BS, l_BS; par, type=:BS)
-        Y_LS = firm_output(l_P_LS, D_LS, l_LS; par, type=:LS)
-        Y_LU = firm_output(l_P_LU, D_LU, l_LU; par, type=:LU)
-        Y_BU = firm_output(l_P_BU, D_BU, l_BU; par, type=:BU)
+        Y_BS = firm_output(D_BS, l_BS; par, type=:BS)
+        Y_LS = firm_output(D_LS, l_LS; par, type=:LS)
+        Y_LU = firm_output(D_LU, l_LU; par, type=:LU)
+        Y_BU = firm_output(D_BU, l_BU; par, type=:BU)
 
-        Π_BS = firm_revenue(l_P_BS, D_BS, l_BS; par, type=:BS)
-        Π_LS = firm_revenue(l_P_LS, D_LS, l_LS; par, type=:LS)
-        Π_LU = firm_revenue(l_P_LU, D_LU, l_LU; par, type=:LU)
-        Π_BU = firm_revenue(l_P_BU, D_BU, l_BU; par, type=:BU)
-
-        K_BS = knowledge(l_P_BS, D_BS; par, type=:BS)
-        K_LS = knowledge(l_P_LS, D_LS; par, type=:LS)
-        K_LU = knowledge(l_P_LU, D_LU; par, type=:LU)
-        K_BU = knowledge(l_P_BU, D_BU; par, type=:BU)
-
+        Π_BS = firm_revenue(D_BS, l_BS; par, type=:BS)
+        Π_LS = firm_revenue(D_LS, l_LS; par, type=:LS)
+        Π_LU = firm_revenue(D_LU, l_LU; par, type=:LU)
+        Π_BU = firm_revenue(D_BU, l_BU; par, type=:BU)
         
         Π = [Π_BS, Π_LS, Π_LU, Π_BU]
 
@@ -367,11 +361,6 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             @set! par.D_I_BU_ss = D_I_BU # data generated big customer base, unsophisticated
             @set! par.D_I_LS_ss = D_I_LS # data generated small customer base, sophisticated
             @set! par.D_I_BS_ss = D_I_BS # data generated big customer base, sophisticated
-        
-            @set! par.K_LU_ss = K_LU # knowledge employed small customer base, unsophisticated
-            @set! par.K_BU_ss = K_BU # knowledge employed big customer base, unsophisticated
-            @set! par.K_LS_ss = K_LS # knowledge employed small customer base, sophisticated
-            @set! par.K_BS_ss = K_BS # knowledge employed big customer base, sophisticated
         
             @set! par.Firm_sol = Save_Firm_Solution(l, l_G, D_I, D_E, D; par)
         end
