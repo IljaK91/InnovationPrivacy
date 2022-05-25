@@ -61,9 +61,9 @@ function FOC_data_sharing(D, DI, l; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     @assert type in [:LU, :LS, :BU, :BS]
 
-    Π = firm_revenue(D,l; par, type)
+    Π = firm_revenue(D, l; par, type)
     α_K_hat = get_alpha_K_type(type;par)
-    p_D - α_K_hat * Π / D * dD_dDS(D, DI; par)
+    p_D - α_K_hat * Π / D * dD_dDS(D, DI; par) #! does this seem correct?
 end
 
 function FOC_data_sharing2(l_P, D, DI, l, l_P_next, D_next, l_next; par::Pars_v3, type::Symbol)
@@ -88,7 +88,14 @@ function FOC_data_buying(D, l, DE; par::Pars_v3, type::Symbol)
     α_K_hat = get_alpha_K_type(type; par)
     α_K_hat * Π / D * dD_dDE(D, DE; par) - p_D / (1 - τ)
 end
-
+"""
+    Marginal product of Data
+"""
+function MPD(D, l; par::Pars_v3, type::Symbol)
+    α_K_hat = get_alpha_K_type(type; par)
+    Π = firm_revenue(D, l; par, type)
+    α_K_hat * Π/D
+end
 """
     First order condition for data buying, 2 period case.
 """
@@ -172,21 +179,22 @@ sold_data(D_I, l_G, type; par::Pars_v3) = sold_data(D_I, l_G; par, type)
     output = Y_i = K^α*l^(1-α)
 """
 function firm_output(D, l; par::Pars_v3, type::Symbol)
-    α_K_hat = get_alpha_K_type(type; par)
-    D^α_K_hat * l^(1 - α_K_hat)
+    α_K = get_alpha_K_type_normal(type; par)
+    #! This here is incorrect!
+    D^α_K * l^(1 - α_K)
 end
 firm_output(D, l, type; par::Pars_v3) = firm_output(D, l; par, type)
 
 """
-    revenue = p_i * Y_i
+    revenue = p_i * Y_i. Seems ok
 """
-function firm_revenue(D, l; par::Pars_v3, type::Symbol, sec_period::Symbol = :no)
+function firm_revenue(D, l; par::Pars_v3, type::Symbol)
     α_K_hat = get_alpha_K_type(type; par)
     α_L_hat = get_alpha_L_type(type; par)
-    par.ζ * par.Y^par.α_Y * D^α_K_hat * l^α_L_hat
+    par.Y^par.α_Y * D^α_K_hat * l^α_L_hat
 end
 
-firm_revenue(D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(D, l; par, type, sec_period)
+firm_revenue(D, l, type; par::Pars_v3) = firm_revenue(D, l; par, type)
 
 #! this does not work anymore, need to see where it throws an error...
 # function firm_revenue(K, l; par::Pars_v3, sec_period::Symbol = :no)
@@ -198,15 +206,15 @@ firm_revenue(D, l, type; par::Pars_v3, sec_period::Symbol = :no) = firm_revenue(
 # end 
 
 """
-    Analytical solution for labor demand
+    Analytical solution for labor demand. Looks ok.
 """
 function labor_demand(D; par::Pars_v3, type::Symbol)
     @unpack_Pars_v3 par
     α_K_hat = get_alpha_K_type(type; par)
     α_L_hat = get_alpha_L_type(type; par)
-    (ζ * α_L_hat * Y^(α_Y) * D^(α_K_hat) / w)^(1 / (1 - α_L_hat))
+    (α_L_hat * Y^α_Y * D^α_K_hat / w)^(1 / (1 - α_L_hat))
 end
-labor_demand(D, type; par::Pars_v3, sec_period::Symbol = :no) = labor_demand(D; par, type, sec_period)
+labor_demand(D, type; par::Pars_v3) = labor_demand(D; par, type)
 
 """
     Analytical Solution when D_S > 0.
@@ -225,12 +233,11 @@ end
 """
     Firm profits
 """
-function firm_profits(l, l_P, l_G, D_S, D_E; par::Pars_v3, type::Symbol)
+function firm_profits(l, l_G, D_S, D_E; par::Pars_v3, type::Symbol)
     D_G = data_gen(l_G; par, type)
     D_I = data_intern(D_G, D_S; par)
     D = bundle(D_I, D_E; par, type)
-    K = knowledge(l_P, D; par, type)
-    Π = firm_revenue(K, l; par)
-    Π - par.w * l - par.w_G * l_G - par.w_P * l_P + par.p_D * D_S - par.p_D / (1 - par.τ) * D_E
+    Π = firm_revenue(D, l; par, type)
+    Π - par.w * l - par.w_G * l_G + par.p_D * D_S - par.p_D / (1 - par.τ) * D_E
 end
-firm_profits(l, l_P, l_G, D_S, D_E, type::Symbol; par::Pars_v3) = firm_profits(l, l_P, l_G, D_S, D_E; par, type)
+firm_profits(l, l_G, D_S, D_E, type::Symbol; par::Pars_v3) = firm_profits(l, l_G, D_S, D_E; par, type)

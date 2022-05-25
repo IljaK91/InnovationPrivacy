@@ -257,10 +257,10 @@ function residuals_p_D(p_D; par::Pars_v3)
 
     @set! par.p_D = p_D
 
-    l_P_BS, l_G_BS, l_BS, D_E_BS, D_I_BS, D_BS = sol_f_problem_nl(par, type = :BS)
-    l_P_LS, l_G_LS, l_LS, D_E_LS, D_I_LS, D_LS = sol_f_problem_nl(par, type = :LS)
-    l_P_LU, l_G_LU, l_LU, D_E_LU, D_I_LU, D_LU = sol_f_problem_nl(par, type = :LU)
-    l_P_BU, l_G_BU, l_BU, D_E_BU, D_I_BU, D_BU = sol_f_problem_nl(par, type = :BU)
+    l_G_BS, l_BS, D_E_BS, D_I_BS, D_BS = sol_f_problem_nl(par, type = :BS)
+    l_G_LS, l_LS, D_E_LS, D_I_LS, D_LS = sol_f_problem_nl(par, type = :LS)
+    l_G_LU, l_LU, D_E_LU, D_I_LU, D_LU = sol_f_problem_nl(par, type = :LU)
+    l_G_BU, l_BU, D_E_BU, D_I_BU, D_BU = sol_f_problem_nl(par, type = :BU)
 
     l_G = [l_G_BS, l_G_LS, l_G_LU, l_G_BU]
     D_E = [D_E_BS, D_E_LS, D_E_LU, D_E_BU]

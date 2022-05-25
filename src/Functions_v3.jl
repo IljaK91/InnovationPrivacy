@@ -123,15 +123,15 @@ end
 
 function solve_firm_problem_nl(par::Pars_v3; type::Symbol)
     sol = solve_firm_problem_unc_nl(par; type)
-    l_G, l, D_E, D_I, D = get_solution_nl(sol; par, type)
+    l_G, l, D_E, D_I, D = get_solution_nl_unc(sol; par, type)
 
     D_S = sold_data(D_I, l_G; par, type)
     #! Idea: Solve first unconstrained problem. If firm tries to buy internal data, constrain to not sharing data.
     if D_S < 0
         sol_con = solve_firm_problem_con_nl(par; type)
-        return sol_con
+        return get_solution_nl_con(sol_con; par, type)
     elseif D_S >= 0
-        return sol
+        return get_solution_nl_unc(sol; par, type)
     else
         error("I never should be here")
     end
@@ -195,7 +195,7 @@ function aggregate_labor(l_BS, l_LS, l_LU, l_BU; par::Pars_v3)
 end
 
 sol_f_problem(par::Pars_v3; type::Symbol) = get_solution(solve_firm_problem(par; type); par, type)
-sol_f_problem_nl(par::Pars_v3; type::Symbol) = get_solution_nl(solve_firm_problem_nl(par; type); par, type)
+sol_f_problem_nl(par::Pars_v3; type::Symbol) = solve_firm_problem_nl(par; type)
 
 function get_ss_solution(sol)
     Y = sol.minimizer[1]^2
@@ -274,7 +274,7 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             #@show w
             #@show w_G
             #@show w_P
-            println("$counter. step, res =  $diff")
+            println("Iteration: $counter, Residual: $diff")
         end
 
         #! Try to make the convergence a bit more smooth, choose a small lambda
@@ -308,10 +308,10 @@ function find_steady_state(par::Pars_v3; tol=1e-10, show_steps::Symbol=:yes)
             D_G_LU = data_gen(l_G_LU; par, type=:LU)
             D_G_BU = data_gen(l_G_BU; par, type=:BU)
         
-            prof_BS = firm_profits(l_BS, l_P_BS, l_G_BS, D_S_BS, D_E_BS; par, type=:BS)
-            prof_LS = firm_profits(l_LS, l_P_LS, l_G_LS, D_S_LS, D_E_LS; par, type=:LS)
-            prof_LU = firm_profits(l_LU, l_P_LU, l_G_LU, D_S_LU, D_E_LU; par, type=:LU)
-            prof_BU = firm_profits(l_BU, l_P_BU, l_G_BU, D_S_BU, D_E_BU; par, type=:BU)
+            prof_BS = firm_profits(l_BS, l_G_BS, D_S_BS, D_E_BS; par, type=:BS)
+            prof_LS = firm_profits(l_LS, l_G_LS, D_S_LS, D_E_LS; par, type=:LS)
+            prof_LU = firm_profits(l_LU, l_G_LU, D_S_LU, D_E_LU; par, type=:LU)
+            prof_BU = firm_profits(l_BU, l_G_BU, D_S_BU, D_E_BU; par, type=:BU)
         
             agg_D_S = D_S_BS + D_S_LS + D_S_LU + D_S_BU
             agg_D_G = D_G_BS + D_G_LS + D_G_LU + D_G_BU

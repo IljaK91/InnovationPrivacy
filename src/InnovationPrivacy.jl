@@ -23,6 +23,7 @@ include("FOCS_v3.jl")
 include("Auxiliary_Funcs.jl")
 include("Wages.jl")
 include("Residuals.jl")
+include("Functions_plot_comp_statics.jl")
 
 #include("Functions.jl")
 #include("FunctionsDeprInfo.jl")
@@ -34,8 +35,8 @@ include("Residuals.jl")
 #include("Functions_bundle.jl")
 
 export Pars, ParsGrowth, Pars_Bundle, BPars, BParsGrowth, Pars_Simple, Pars_OLG, Pars_v3, residuals, solve_firm_problem, FOC_data_sharing, bundle, dD_dDI, dD_dDE, FOC_data_gen, FOC_data_buying, FOC_int_labor, data_gen, get_solution, weight_of_type, sold_data, firm_output, aggregate_output, residuals_SS, find_steady_state, get_ss_solution, residuals_SS_single, find_p_D, find_steady_state_iterative, comp_statics, residuals_p_D, firm_revenue, sol_f_problem, find_steady_state_PE, firm_profits, solve_firm_problem_unc, solve_firm_problem_con, solve_firm_problem_unc2, solve_firm_problem_nl, sol_f_problem_nl, find_value_func, Firm_sol, Save_Firm_Solution, solve_firm_problem_unc_nl2, solve_firm_problem_unc_nl, get_solution_nl2, A_G_of_type, solve_firm_problem_con_nl,
-@unpack_Pars, @unpack_ParsGrowth, @unpack_BPars, @unpack_BParsGrowth, @unpack_Pars_OLG, @unpack_Pars_Simple, @unpack_Pars_Bundle, @unpack_Pars_v3, @unpack_Firm_sol,
-firm_profit,
+    @unpack_Pars, @unpack_ParsGrowth, @unpack_BPars, @unpack_BParsGrowth, @unpack_Pars_OLG, @unpack_Pars_Simple, @unpack_Pars_Bundle, @unpack_Pars_v3, @unpack_Firm_sol,
+    firm_profit, MPD, get_alpha_K_type, plot_comp_static_firm, plot_comp_static_firm_export,
 capital_demand,
 test_func,
 Eπ, Er, EA,

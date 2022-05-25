@@ -481,10 +481,8 @@ end
     #! This is the solution for the model with tau = 0, nu = 0, α_Y = 0
     Y = 2.075300672340325  # aggregate output
     w = 0.2367874818108683  # wage rate good production
-    w_P = 0.04669426512765732  # wage rate data processing
     w_G = 0.06021347283561476  # wage rate data generation
     L = 1  # Labor supply for production of the intermediate good
-    L_P = 1  # Labor supply for processing data
     L_G = 1  # Labor supply for generating / structuring data
     p_D = 0.11356059692613776  # Price of Structured Data
     Ω = 0.0 # data multiplier, generated minus iceberg transportation plus non-rival
@@ -561,11 +559,6 @@ end
     l_LS_ss = 0 # Labor good production small customer base, sophisticated
     l_BS_ss = 0 # Labor good production big customer base, sophisticated
 
-    l_P_LU_ss = 0 # Labor good production small customer base, unsophisticated
-    l_P_BU_ss = 0 # Labor good production big customer base, unsophisticated
-    l_P_LS_ss = 0 # Labor good production small customer base, sophisticated
-    l_P_BS_ss = 0 # Labor good production big customer base, sophisticated
-
     l_G_LU_ss = 0 # Labor good production small customer base, unsophisticated
     l_G_BU_ss = 0 # Labor good production big customer base, unsophisticated
     l_G_LS_ss = 0 # Labor good production small customer base, sophisticated
@@ -600,17 +593,7 @@ end
     D_last_BU = 0 # data generated big customer base, unsophisticated
     D_last_LS = 0 # data generated small customer base, sophisticated
     D_last_BS = 0 # data generated big customer base, sophisticated
-
-    K_LU_ss = 0 # knowledge employed small customer base, unsophisticated
-    K_BU_ss = 0 # knowledge employed big customer base, unsophisticated
-    K_LS_ss = 0 # knowledge employed small customer base, sophisticated
-    K_BS_ss = 0 # knowledge employed big customer base, sophisticated
-
-    K_last_LU = 0 # knowledge employed small customer base, unsophisticated
-    K_last_BU = 0 # knowledge employed big customer base, unsophisticated
-    K_last_LS = 0 # knowledge employed small customer base, sophisticated
-    K_last_BS = 0 # knowledge employed big customer base, sophisticated
-
+    
     prof_LU_ss = 0 # knowledge employed small customer base, unsophisticated
     prof_BU_ss = 0 # knowledge employed big customer base, unsophisticated
     prof_LS_ss = 0 # knowledge employed small customer base, sophisticated
