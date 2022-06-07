@@ -46,14 +46,14 @@ function solve_firm_problem_unc_nl(par::Pars_v3; type::Symbol)
         0.8017602275570367]
 
     #res = optimize(f, initial_x, Optim.Options(g_tol = 1e-14))
-    res = nlsolve(f!, initial_x)
+    sol = nlsolve(f!, initial_x)
     # try
     #     @assert Optim.converged(res) == true
     # catch
     #     τ = par.τ
     #     println("Solution may be inaccurate for $τ and $type")
     # end
-    return res
+    return sol
 end
 
 function solve_firm_problem_unc_nl2(par::Pars_v3; type::Symbol, sec_period::Symbol=:no)
